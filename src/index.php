@@ -10,19 +10,35 @@ $output = array(
 );
 $x;
 $y;
-try{
+
+if (false == strpos($_SERVER['REQUEST_URI'], 'x') || false == strpos($_SERVER['REQUEST_URI'], 'y')) {
+	$output['error']=true;
+	$output['string']='No parameters provided';
+	http_response_code(404);
+	echo json_encode($output);
+	exit();
+}
+
 $x = $_REQUEST['x'];
 $y = $_REQUEST['y'];
-}
-catch(Exception $e){
+
+if(!ctype_digit($x)||!ctype_digit($y)){
 	$output['error']=true;
-	echo $e->getMessage();
+	$output['string']='Parameters must be integers';
+	http_response_code(404);
+	echo json_encode($output);
+	exit();
 }
+
+$x = $_REQUEST['x'];
+$y = $_REQUEST['y'];
 
 $answer=add($x,$y);
 
 $output['string']=$x."+".$y."=".$answer;
 $output['answer']=$answer;
+http_response_code(200);
 
 echo json_encode($output);
 exit();
+?>
